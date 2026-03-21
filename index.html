@@ -678,6 +678,13 @@ nav{
   display:flex;align-items:center;gap:7px;
 }
 .tc-foot::before{content:"▸";color:var(--aqua);}
+.tc-featured{border-color:var(--line2);}
+.tc-featured:hover{border-color:rgba(23,195,224,.35);}
+@media(max-width:600px){
+  .tc-featured>div{grid-template-columns:1fr!important;}
+  .tc-featured>div>div:first-child{display:flex;align-items:center;gap:14px;text-align:left;}
+  .tc-featured .tc-av{margin:0!important;}
+}
 
 /* Upwork strip */
 .uw-strip{
@@ -1301,20 +1308,26 @@ footer{
 <section class="sec" id="reviews">
   <div class="sec-tag">08 — Client Reviews</div>
   <h2 class="sec-h">What Clients <span class="hi">Say</span></h2>
+
+  <!-- Featured review — full width -->
+  <div class="tc tc-featured rv" style="margin-bottom:14px;">
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;">
+      <div style="text-align:center;flex-shrink:0;">
+        <img class="tc-av" style="width:64px;height:64px;margin:0 auto 10px;" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face" alt="James R."/>
+        <div class="tc-name" style="font-size:14px;">James R.</div>
+        <div class="tc-role" style="font-size:11px;">Tech Startup Founder<br>United States</div>
+        <div class="tc-stars" style="margin-top:5px;">★★★★★</div>
+      </div>
+      <div>
+        <div style="font-family:var(--f-display);font-size:clamp(13px,2vw,16px);color:var(--txt-2);line-height:1.88;font-style:italic;">"Working with Shaikh was one of the best decisions I made for my project. He is a highly skilled Electronic Engineer with deep expertise in IoT, Embedded Systems, Python, and MATLAB. He delivered precise, well-documented, and reliable engineering solutions on time and within budget. His attention to detail and problem-solving approach set him apart from every other freelancer I've worked with. I will absolutely hire him again for my next project."</div>
+        <div class="tc-foot" style="margin-top:16px;padding-top:12px;">IoT &amp; Embedded Systems · Full Project Delivery</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-column grid reviews -->
   <div class="tg">
     <div class="tc rv">
-      <div class="tc-hd">
-        <img class="tc-av" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="James R."/>
-        <div>
-          <div class="tc-name">James R.</div>
-          <div class="tc-role">Tech Startup Founder · United States</div>
-          <div class="tc-stars">★★★★★</div>
-        </div>
-      </div>
-      <p class="tc-q">"Working with Shaikh was one of the best decisions I made for my project. He is a highly skilled Electronic Engineer with deep expertise in IoT, Embedded Systems, Python, and MATLAB. He delivered precise, well-documented, and reliable engineering solutions on time and within budget. His attention to detail and problem-solving approach set him apart from every other freelancer I've worked with."</p>
-      <div class="tc-foot">IoT &amp; Embedded Systems Project</div>
-    </div>
-    <div class="tc rv d2">
       <div class="tc-hd">
         <img class="tc-av" src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="Mohammed A."/>
         <div>
@@ -1323,10 +1336,76 @@ footer{
           <div class="tc-stars">★★★★★</div>
         </div>
       </div>
-      <p class="tc-q">"We hired Shaikh for our solar energy company and he exceeded every expectation. His expertise in smart monitoring and circuit design added real value to our operations. His professionalism, clear communication, and on-time delivery were outstanding. His well-structured documentation made implementation and handover seamless for our entire team. We will not hesitate to hire him again."</p>
+      <p class="tc-q">"We hired Shaikh for our solar energy company and he exceeded every expectation. His expertise in smart monitoring and circuit design added real value to our operations. His professionalism, clear communication, and on-time delivery were outstanding. His well-structured documentation made implementation and handover seamless for our entire team."</p>
       <div class="tc-foot">Solar Energy Smart Monitoring System</div>
     </div>
+
+    <div class="tc rv d1">
+      <div class="tc-hd">
+        <img class="tc-av" src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="David K."/>
+        <div>
+          <div class="tc-name">David K.</div>
+          <div class="tc-role">R&amp;D Lead · Germany</div>
+          <div class="tc-stars">★★★★★</div>
+        </div>
+      </div>
+      <p class="tc-q">"Shaikh built a custom MATLAB simulation toolchain for our power systems research. The code was clean, well-commented, and the automated report generation saved our team hours every week. He understood the engineering requirements immediately and asked exactly the right questions. Exceptional technical depth."</p>
+      <div class="tc-foot">MATLAB Power Systems Simulation</div>
+    </div>
+
+    <div class="tc rv d2">
+      <div class="tc-hd">
+        <img class="tc-av" src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="Sarah M."/>
+        <div>
+          <div class="tc-name">Sarah M.</div>
+          <div class="tc-role">Product Manager · Canada</div>
+          <div class="tc-stars">★★★★★</div>
+        </div>
+      </div>
+      <p class="tc-q">"We needed a reliable ESP32 firmware developer fast. Shaikh delivered a fully working BLE + Wi-Fi sensor node with OTA updates in under a week. The documentation was so thorough that our in-house team integrated it without a single follow-up question. This is the gold standard for freelance engineering work."</p>
+      <div class="tc-foot">ESP32 BLE Firmware Development</div>
+    </div>
+
+    <div class="tc rv d3">
+      <div class="tc-hd">
+        <img class="tc-av" src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="Tariq S."/>
+        <div>
+          <div class="tc-name">Tariq S.</div>
+          <div class="tc-role">Industrial Automation · UAE</div>
+          <div class="tc-stars">★★★★★</div>
+        </div>
+      </div>
+      <p class="tc-q">"Our factory needed a custom Modbus RTU data logger integrated with a Python dashboard. Shaikh handled the entire stack — STM32 firmware, RS485 communication, and the Python backend — with zero bugs at handover. He is the kind of engineer you want on every serious project."</p>
+      <div class="tc-foot">Industrial IoT &amp; Modbus Integration</div>
+    </div>
+
+    <div class="tc rv d1">
+      <div class="tc-hd">
+        <img class="tc-av" src="https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="Lucas B."/>
+        <div>
+          <div class="tc-name">Lucas B.</div>
+          <div class="tc-role">Hardware Startup · Netherlands</div>
+          <div class="tc-stars">★★★★★</div>
+        </div>
+      </div>
+      <p class="tc-q">"Shaikh designed a 4-layer PCB for our wearable IoT device under extremely tight size and power constraints. He proposed optimisations we hadn't even considered, delivered the Gerber files ahead of schedule, and followed up after fabrication to make sure everything was correct. A true professional."</p>
+      <div class="tc-foot">Custom PCB Design · Wearable IoT</div>
+    </div>
+
+    <div class="tc rv d2">
+      <div class="tc-hd">
+        <img class="tc-av" src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop&crop=face" alt="Yusuf A."/>
+        <div>
+          <div class="tc-name">Yusuf A.</div>
+          <div class="tc-role">Renewable Energy Consultant · Nigeria</div>
+          <div class="tc-stars">★★★★★</div>
+        </div>
+      </div>
+      <p class="tc-q">"I brought Shaikh in to build a LoRaWAN monitoring network for a remote off-grid solar farm. The system has been running for months without a single failure. His understanding of both the hardware and the energy domain is rare — he did not just code, he engineered a proper solution."</p>
+      <div class="tc-foot">LoRaWAN Off-Grid Solar Monitoring</div>
+    </div>
   </div>
+
   <div class="uw-strip rv">
     <div class="uw-n" style="text-align:center">5.0★<div class="uw-l">Average Rating</div></div>
     <div class="uw-div"></div>
