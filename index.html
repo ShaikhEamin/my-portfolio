@@ -62,6 +62,14 @@ a{text-decoration:none;color:inherit}
 button{cursor:pointer;font:inherit}
 
 /* ═══════════════════════════════════════
+   TECH BACKGROUND CANVAS
+═══════════════════════════════════════ */
+#tech-bg{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:1;
+}
+
+/* ═══════════════════════════════════════
    AMBIENT BACKGROUND
 ═══════════════════════════════════════ */
 body::before{
@@ -882,6 +890,7 @@ footer{
 <body>
 
 <div id="prog"></div>
+<canvas id="tech-bg"></canvas>
 <div id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
 
 <!-- NAV -->
@@ -1084,7 +1093,7 @@ footer{
           <div class="tl-dot"></div>
           <div class="tl-period">2019 — 2023</div>
           <div class="tl-role">B.Sc. in Electrical &amp; Electronic Engineering</div>
-          <div class="tl-org">AIUB · CGPA 3.68/4.00</div>
+          <div class="tl-org">AIUB · CGPA 3.28/4.00</div>
           <div class="tl-desc">Capstone on IoT-based piezoelectric transformer protection. IEEE AIUB Student Branch member. Workshop speaker. National Circuit Debugging Contest organiser.</div>
         </div>
       </div>
@@ -1531,6 +1540,218 @@ window.addEventListener("scroll",()=>{
     document.body.style.overflow="";
   }
 },{passive:true});
-</script>
+
+/* ══════════════════════════════════════════
+   TECH BACKGROUND — Circuit Traces + Nodes
+══════════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById("tech-bg");
+  const ctx = canvas.getContext("2d");
+
+  const AQUA  = "23,195,224";
+  const SAGE  = "45,212,160";
+  const PLUM  = "155,111,232";
+
+  let W, H, nodes, pulses, sparks;
+  const NODE_COUNT = window.innerWidth < 600 ? 18 : 32;
+  const PULSE_INTERVAL = 900; // ms between new pulses
+  let lastPulse = 0;
+
+  /* ── Resize ── */
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  /* ── Node class ── */
+  class Node {
+    constructor(){
+      this.reset(true);
+    }
+    reset(init){
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 2.5 + 1;
+      this.color = [AQUA, SAGE, PLUM][Math.floor(Math.random()*3)];
+      this.alpha = Math.random() * 0.4 + 0.1;
+      this.blink = Math.random() * Math.PI * 2;
+      this.blinkSpeed = Math.random() * 0.02 + 0.008;
+      this.vx = (Math.random() - 0.5) * 0.18;
+      this.vy = (Math.random() - 0.5) * 0.18;
+    }
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      this.blink += this.blinkSpeed;
+      if(this.x < -20) this.x = W + 20;
+      if(this.x > W+20) this.x = -20;
+      if(this.y < -20) this.y = H + 20;
+      if(this.y > H+20) this.y = -20;
+    }
+    draw(){
+      const a = this.alpha * (0.6 + 0.4 * Math.sin(this.blink));
+      // outer ring
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r * 2.8, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${this.color},${a * 0.18})`;
+      ctx.fill();
+      // core dot
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${this.color},${a})`;
+      ctx.fill();
+    }
+  }
+
+  /* ── Pulse class — travels along an edge ── */
+  class Pulse {
+    constructor(from, to){
+      this.from = from;
+      this.to   = to;
+      this.t    = 0;        // 0→1 progress
+      this.speed = Math.random() * 0.008 + 0.005;
+      this.color = from.color;
+      this.done  = false;
+    }
+    update(){
+      this.t += this.speed;
+      if(this.t >= 1) this.done = true;
+    }
+    draw(){
+      const x = this.from.x + (this.to.x - this.from.x) * this.t;
+      const y = this.from.y + (this.to.y - this.from.y) * this.t;
+      const a = 1 - Math.pow(this.t - 0.5, 2) * 4; // fade in/out
+      if(a <= 0) return;
+      // glow
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${this.color},${a * 0.15})`;
+      ctx.fill();
+      // core
+      ctx.beginPath();
+      ctx.arc(x, y, 2.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${this.color},${a * 0.9})`;
+      ctx.fill();
+    }
+  }
+
+  /* ── Init ── */
+  function init(){
+    resize();
+    nodes  = Array.from({length: NODE_COUNT}, () => new Node());
+    pulses = [];
+  }
+
+  /* ── Find neighbours within threshold ── */
+  function neighbours(node, threshold){
+    return nodes
+      .filter(n => n !== node)
+      .map(n => ({node:n, d: Math.hypot(n.x-node.x, n.y-node.y)}))
+      .filter(({d}) => d < threshold)
+      .sort((a,b) => a.d - b.d)
+      .slice(0,3)
+      .map(({node}) => node);
+  }
+
+  /* ── Draw edges between close nodes ── */
+  function drawEdges(){
+    const THRESH = Math.min(W, H) * 0.28;
+    for(let i=0; i<nodes.length; i++){
+      const n = nodes[i];
+      const nb = neighbours(n, THRESH);
+      nb.forEach(m => {
+        const d = Math.hypot(m.x-n.x, m.y-n.y);
+        const a = (1 - d/THRESH) * 0.13;
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y);
+
+        // Route: horizontal then vertical (circuit-board style 70% of time)
+        if(Math.random() < 0.7){
+          const mid = { x: m.x, y: n.y };
+          ctx.lineTo(mid.x, mid.y);
+          ctx.lineTo(m.x, m.y);
+        } else {
+          ctx.lineTo(m.x, m.y);
+        }
+
+        ctx.strokeStyle = `rgba(${n.color},${a})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      });
+    }
+  }
+
+  /* ── Spawn a new pulse on a random edge ── */
+  function spawnPulse(){
+    const THRESH = Math.min(W, H) * 0.28;
+    const from = nodes[Math.floor(Math.random()*nodes.length)];
+    const nb = neighbours(from, THRESH);
+    if(nb.length === 0) return;
+    const to = nb[Math.floor(Math.random()*nb.length)];
+    pulses.push(new Pulse(from, to));
+  }
+
+  /* ── Scanline ── */
+  let scanY = -60;
+  function drawScan(){
+    scanY += 0.4;
+    if(scanY > H + 60) scanY = -60;
+    const grad = ctx.createLinearGradient(0, scanY-40, 0, scanY+40);
+    grad.addColorStop(0, "rgba(23,195,224,0)");
+    grad.addColorStop(0.5, "rgba(23,195,224,0.025)");
+    grad.addColorStop(1, "rgba(23,195,224,0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, scanY-40, W, 80);
+  }
+
+  /* ── Corner bracket decorations (static) ── */
+  function drawCornerBrackets(){
+    const sz = 28, gap = 20;
+    const col = "rgba(23,195,224,0.12)";
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1.2;
+    // TL
+    ctx.beginPath(); ctx.moveTo(gap, gap+sz); ctx.lineTo(gap,gap); ctx.lineTo(gap+sz,gap); ctx.stroke();
+    // TR
+    ctx.beginPath(); ctx.moveTo(W-gap-sz, gap); ctx.lineTo(W-gap,gap); ctx.lineTo(W-gap,gap+sz); ctx.stroke();
+    // BL
+    ctx.beginPath(); ctx.moveTo(gap, H-gap-sz); ctx.lineTo(gap,H-gap); ctx.lineTo(gap+sz,H-gap); ctx.stroke();
+    // BR
+    ctx.beginPath(); ctx.moveTo(W-gap-sz, H-gap); ctx.lineTo(W-gap,H-gap); ctx.lineTo(W-gap,H-gap-sz); ctx.stroke();
+  }
+
+  /* ── RAF loop ── */
+  let raf;
+  function loop(ts){
+    ctx.clearRect(0, 0, W, H);
+
+    drawCornerBrackets();
+    drawScan();
+    drawEdges();
+
+    nodes.forEach(n => { n.update(); n.draw(); });
+
+    // Spawn pulses on interval
+    if(ts - lastPulse > PULSE_INTERVAL){
+      spawnPulse();
+      lastPulse = ts;
+    }
+    pulses = pulses.filter(p => !p.done);
+    pulses.forEach(p => { p.update(); p.draw(); });
+
+    raf = requestAnimationFrame(loop);
+  }
+
+  /* ── Pause when tab hidden (saves battery) ── */
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden){ cancelAnimationFrame(raf); }
+    else { raf = requestAnimationFrame(loop); }
+  });
+
+  window.addEventListener("resize", () => { resize(); });
+
+  init();
+  raf = requestAnimationFrame(loop);
+})();</script>
 </body>
 </html>
