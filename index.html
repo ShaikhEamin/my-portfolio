@@ -130,7 +130,104 @@ nav{
   color:var(--txt-2);padding:6px 13px;border-radius:6px;
   transition:color .2s,background .2s;
 }
-.nav-links a:hover{color:var(--aqua);background:var(--aqua-soft);}
+.nav-links a.active{color:var(--aqua);background:var(--aqua-soft);}
+
+/* ── Custom cursor ── */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  border-radius:50%;background:var(--aqua);
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,opacity .2s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:32px;height:32px;
+  border-radius:50%;border:1px solid rgba(23,195,224,0.5);
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .35s var(--ease),height .35s var(--ease),
+             border-color .35s,transform .1s;
+}
+body:has(a:hover) #cursor,
+body:has(button:hover) #cursor{width:6px;height:6px;opacity:.5;}
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring{
+  width:48px;height:48px;border-color:rgba(23,195,224,0.8);
+}
+@media(pointer:coarse){#cursor,#cursor-ring{display:none;}}
+
+/* ── Contact section ── */
+.contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:48px;align-items:start;
+}
+.contact-intro p{font-size:15.5px;color:var(--txt-2);line-height:1.88;margin-bottom:18px;}
+.contact-intro strong{color:var(--txt);font-weight:600;}
+.contact-links{display:flex;flex-direction:column;gap:10px;margin-top:28px;}
+.clink{
+  display:flex;align-items:center;gap:16px;
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 20px;
+  transition:.25s;position:relative;overflow:hidden;
+  text-decoration:none;
+}
+.clink::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:transparent;transition:background .25s;
+}
+.clink:hover{background:var(--card2);border-color:var(--line2);transform:translateX(4px);}
+.clink:hover::before{background:var(--aqua);}
+.clink-ico{
+  width:40px;height:40px;border-radius:var(--r);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;background:var(--card2);border:1px solid var(--line2);
+}
+.clink-label{font-family:var(--f-mono);font-size:9.5px;color:var(--txt-3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.clink-val{font-size:14px;font-weight:500;color:var(--txt);}
+.clink-arrow{margin-left:auto;color:var(--txt-3);font-size:16px;transition:.2s;}
+.clink:hover .clink-arrow{color:var(--aqua);transform:translateX(3px);}
+.contact-form{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r2);padding:30px;
+}
+.form-title{
+  font-family:var(--f-display);font-size:18px;font-weight:700;
+  color:var(--txt);margin-bottom:20px;
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.form-group label{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--txt-2);
+}
+.form-group input,.form-group textarea,.form-group select{
+  background:var(--card2);border:1px solid var(--line2);
+  border-radius:var(--r);padding:11px 14px;
+  color:var(--txt);font-family:var(--f-body);font-size:14px;
+  outline:none;transition:.2s;resize:none;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  border-color:var(--aqua);box-shadow:0 0 0 3px var(--aqua-soft);
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--txt-3);}
+.form-group select option{background:var(--ink);}
+.form-submit{
+  width:100%;background:var(--aqua);color:#05111d;
+  font-family:var(--f-body);font-weight:700;font-size:14px;
+  padding:13px;border-radius:var(--r);border:none;cursor:pointer;
+  transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.form-submit:hover{background:#3dd0e8;transform:translateY(-1px);box-shadow:0 8px 22px var(--aqua-glow);}
+.form-note{
+  margin-top:12px;font-family:var(--f-mono);font-size:9px;
+  color:var(--txt-3);text-align:center;letter-spacing:.5px;
+}
+@media(max-width:768px){
+  .contact-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+}
+
 .nav-hire{
   display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
   background:var(--aqua);color:#05111d;
@@ -890,6 +987,8 @@ footer{
 <body>
 
 <div id="prog"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 <canvas id="tech-bg"></canvas>
 <div id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
 
@@ -900,13 +999,14 @@ footer{
       <div class="logo-pulse"></div>
       <span>Shaikh<span class="logo-dot">.</span></span>
     </div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#reviews">Reviews</a></li>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#about" data-sec="about">About</a></li>
+      <li><a href="#experience" data-sec="experience">Experience</a></li>
+      <li><a href="#skills" data-sec="skills">Skills</a></li>
+      <li><a href="#projects" data-sec="projects">Projects</a></li>
+      <li><a href="#services" data-sec="services">Services</a></li>
+      <li><a href="#reviews" data-sec="reviews">Reviews</a></li>
+      <li><a href="#contact" data-sec="contact">Contact</a></li>
     </ul>
     <a class="nav-hire" href="https://www.upwork.com/freelancers/~017e14391b541c6446?mp_source=share" target="_blank">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
@@ -925,6 +1025,7 @@ footer{
   <a href="#projects" class="dl">Projects</a>
   <a href="#services" class="dl">Services</a>
   <a href="#reviews" class="dl">Reviews</a>
+  <a href="#contact" class="dl">Contact</a>
   <a href="https://www.upwork.com/freelancers/~017e14391b541c6446?mp_source=share" target="_blank" class="drawer-cta">→ Hire Me on Upwork</a>
 </div>
 
@@ -940,10 +1041,10 @@ footer{
     </h1>
     <p class="hero-sub">
       Electronic Engineer&nbsp;·&nbsp;IoT Specialist<br>
-      Embedded Systems&nbsp;·&nbsp;Python&nbsp;&amp;&nbsp;MATLAB
+      Embedded Systems&nbsp;·&nbsp;FPGA&nbsp;·&nbsp;Python&nbsp;&amp;&nbsp;MATLAB
     </p>
     <p class="hero-bio">
-      I design and build <strong>precision-engineered solutions</strong> across IoT, embedded hardware, Python automation, and renewable energy systems. Trusted by global clients for on-time delivery, clean code, and documentation that actually makes sense.
+      I design and build <strong>precision-engineered solutions</strong> across IoT, embedded hardware, FPGA development, Python automation, and renewable energy systems. Trusted by global clients for on-time delivery, clean code, and documentation that actually makes sense.
     </p>
     <div class="hero-btns">
       <a class="btn-p" href="https://www.upwork.com/freelancers/~017e14391b541c6446?mp_source=share" target="_blank">
@@ -956,6 +1057,7 @@ footer{
       <span class="htag a">IoT Development</span>
       <span class="htag b">Embedded Systems</span>
       <span class="htag c">Python · MATLAB</span>
+      <span class="htag a">FPGA · Verilog</span>
       <span class="htag a">Circuit Design</span>
       <span class="htag b">Solar Energy</span>
       <span class="htag c">Smart Monitoring</span>
@@ -1009,6 +1111,7 @@ footer{
   <div class="mq-track">
     <span class="mq-item">IoT Development <span class="mq-dot">◆</span></span>
     <span class="mq-item">Embedded Systems <span class="mq-dot">◆</span></span>
+    <span class="mq-item">FPGA · Verilog · VHDL <span class="mq-dot">◆</span></span>
     <span class="mq-item">Python Automation <span class="mq-dot">◆</span></span>
     <span class="mq-item">MATLAB · Simulink <span class="mq-dot">◆</span></span>
     <span class="mq-item">Solar Energy Systems <span class="mq-dot">◆</span></span>
@@ -1019,6 +1122,7 @@ footer{
     <span class="mq-item">Technical Documentation <span class="mq-dot">◆</span></span>
     <span class="mq-item">IoT Development <span class="mq-dot">◆</span></span>
     <span class="mq-item">Embedded Systems <span class="mq-dot">◆</span></span>
+    <span class="mq-item">FPGA · Verilog · VHDL <span class="mq-dot">◆</span></span>
     <span class="mq-item">Python Automation <span class="mq-dot">◆</span></span>
     <span class="mq-item">MATLAB · Simulink <span class="mq-dot">◆</span></span>
     <span class="mq-item">Solar Energy Systems <span class="mq-dot">◆</span></span>
@@ -1120,6 +1224,7 @@ footer{
       <div class="sg-head">Hardware &amp; Systems</div>
       <div class="sk-item"><div class="sk-meta"><span class="sk-name">IoT System Design</span><span class="sk-pct">97%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="97%"></div></div></div>
       <div class="sk-item"><div class="sk-meta"><span class="sk-name">Embedded Systems (ARM / AVR)</span><span class="sk-pct">95%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="95%"></div></div></div>
+      <div class="sk-item"><div class="sk-meta"><span class="sk-name">FPGA Design (Verilog / VHDL)</span><span class="sk-pct">88%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="88%"></div></div></div>
       <div class="sk-item"><div class="sk-meta"><span class="sk-name">Circuit Design &amp; PCB Layout</span><span class="sk-pct">90%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="90%"></div></div></div>
       <div class="sk-item"><div class="sk-meta"><span class="sk-name">Solar &amp; Renewable Energy</span><span class="sk-pct">88%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="88%"></div></div></div>
       <div class="sk-item"><div class="sk-meta"><span class="sk-name">Smart Monitoring &amp; SCADA</span><span class="sk-pct">93%</span></div><div class="sk-track"><div class="sk-fill fc" data-w="93%"></div></div></div>
@@ -1136,14 +1241,15 @@ footer{
   <div class="tools-grid rv">
     <div class="tt">Raspberry Pi</div><div class="tt">Arduino</div>
     <div class="tt">ESP32/ESP8266</div><div class="tt">STM32/ARM</div>
-    <div class="tt">MQTT</div><div class="tt">Node-RED</div>
-    <div class="tt">KiCad/Altium</div><div class="tt">MATLAB</div>
-    <div class="tt">Simulink</div><div class="tt">Python 3</div>
-    <div class="tt">NumPy/Pandas</div><div class="tt">Modbus/RS485</div>
-    <div class="tt">LoRaWAN</div><div class="tt">AWS IoT</div>
-    <div class="tt">Proteus/LTSpice</div><div class="tt">FreeRTOS</div>
-    <div class="tt">SPI · I2C · UART</div><div class="tt">Git · GitHub</div>
-    <div class="tt">Grafana</div><div class="tt">InfluxDB</div>
+    <div class="tt">FPGA (Xilinx/Intel)</div><div class="tt">Verilog · VHDL</div>
+    <div class="tt">Vivado · Quartus</div><div class="tt">MQTT</div>
+    <div class="tt">Node-RED</div><div class="tt">KiCad/Altium</div>
+    <div class="tt">MATLAB</div><div class="tt">Simulink</div>
+    <div class="tt">Python 3</div><div class="tt">NumPy/Pandas</div>
+    <div class="tt">Modbus/RS485</div><div class="tt">LoRaWAN</div>
+    <div class="tt">AWS IoT</div><div class="tt">Proteus/LTSpice</div>
+    <div class="tt">FreeRTOS</div><div class="tt">SPI · I2C · UART</div>
+    <div class="tt">Git · GitHub</div><div class="tt">Grafana</div>
   </div>
 </section>
 
@@ -1155,6 +1261,7 @@ footer{
     <button class="pf-btn on" onclick="fp(event,'all')">All Projects</button>
     <button class="pf-btn" onclick="fp(event,'iot')">IoT Systems</button>
     <button class="pf-btn" onclick="fp(event,'emb')">Embedded</button>
+    <button class="pf-btn" onclick="fp(event,'fpga')">FPGA</button>
     <button class="pf-btn" onclick="fp(event,'py')">Python · MATLAB</button>
     <button class="pf-btn" onclick="fp(event,'sol')">Renewable Energy</button>
   </div>
@@ -1225,10 +1332,18 @@ footer{
         <div class="pc-tags"><span class="pt">LoRaWAN</span><span class="pt">AWS IoT</span><span class="pt">ESP32</span><span class="pt">Off-Grid</span></div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ── GALLERY ── -->
+    <div class="pc" data-c="fpga emb">
+      <div class="pc-img">
+        <img src="https://images.pexels.com/photos/6153354/pexels-photo-6153354.jpeg?auto=compress&cs=tinysrgb&w=640&h=400&fit=crop" alt="FPGA digital logic design" loading="lazy"/>
+      </div>
+      <div class="pc-body">
+        <div class="pc-cat" style="color:var(--plum);font-family:var(--f-mono);font-size:9.5px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;">FPGA · Digital Design</div>
+        <div class="pc-title">FPGA-Based Signal Processing Unit</div>
+        <div class="pc-desc">High-speed digital signal processing on Xilinx FPGA — custom Verilog RTL design, timing constraint analysis, and UART communication interface for real-time data output.</div>
+        <div class="pc-tags"><span class="pt">Verilog</span><span class="pt">Xilinx</span><span class="pt">Vivado</span><span class="pt">RTL Design</span><span class="pt">UART</span></div>
+      </div>
+    </div>
+  </div> -->
 <section class="sec">
   <div class="sec-tag">05 — Engineering in Practice</div>
   <h2 class="sec-h">From Schematic <span class="ghost">to Reality</span></h2>
@@ -1296,6 +1411,15 @@ footer{
         <div class="sv-chips"><span class="sv-chip">Solar PV</span><span class="sv-chip">MPPT</span><span class="sv-chip">Smart Monitoring</span><span class="sv-chip">Energy Storage</span><span class="sv-chip">Grid Analysis</span></div>
       </div>
       <div class="sv-price"><span class="sp-from">Starting from</span><div class="sp-num">$200</div></div>
+    </div>
+    <div class="sv rv d4">
+      <div class="sv-ico" style="width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;background:rgba(155,111,232,0.1);border:1px solid rgba(155,111,232,0.2);">⚡</div>
+      <div>
+        <div class="sv-title">FPGA Design &amp; Digital Logic</div>
+        <div class="sv-desc">RTL design in Verilog and VHDL, FPGA implementation on Xilinx and Intel platforms, timing constraint analysis, hardware simulation, and full synthesis through Vivado and Quartus.</div>
+        <div class="sv-chips"><span class="sv-chip">Verilog</span><span class="sv-chip">VHDL</span><span class="sv-chip">Xilinx / Intel</span><span class="sv-chip">Vivado</span><span class="sv-chip">Quartus</span><span class="sv-chip">RTL Design</span></div>
+      </div>
+      <div class="sv-price"><span class="sp-from">Starting from</span><div class="sp-num">$180</div></div>
     </div>
   </div>
 </section>
@@ -1426,6 +1550,87 @@ footer{
   </div>
 </section>
 
+<!-- ── CONTACT ── -->
+<section class="sec" id="contact">
+  <div class="sec-tag">09 — Get In Touch</div>
+  <h2 class="sec-h">Start a <span class="hi">Conversation</span></h2>
+  <div class="contact-grid">
+    <div class="contact-intro rv">
+      <p>Have a project in mind? Looking for a reliable engineer who delivers on time and communicates clearly? I'd love to hear about it.</p>
+      <p><strong>Response time is typically under 12 hours.</strong> Whether it's a quick question or a full project brief, reach out through any channel below.</p>
+      <div class="contact-links">
+        <a class="clink" href="https://www.upwork.com/freelancers/~017e14391b541c6446?mp_source=share" target="_blank">
+          <div class="clink-ico">💼</div>
+          <div>
+            <div class="clink-label">Upwork</div>
+            <div class="clink-val">upwork.com/fl/shaikheamin</div>
+          </div>
+          <span class="clink-arrow">→</span>
+        </a>
+        <a class="clink" href="mailto:shaikh.eamin@email.com">
+          <div class="clink-ico">✉️</div>
+          <div>
+            <div class="clink-label">Email</div>
+            <div class="clink-val">shaikh.eamin@email.com</div>
+          </div>
+          <span class="clink-arrow">→</span>
+        </a>
+        <a class="clink" href="https://linkedin.com/in/shaikh-eamin" target="_blank">
+          <div class="clink-ico">🔗</div>
+          <div>
+            <div class="clink-label">LinkedIn</div>
+            <div class="clink-val">linkedin.com/in/shaikh-eamin</div>
+          </div>
+          <span class="clink-arrow">→</span>
+        </a>
+        <a class="clink" href="https://github.com/shaikh-eamin" target="_blank">
+          <div class="clink-ico">⚡</div>
+          <div>
+            <div class="clink-label">GitHub</div>
+            <div class="clink-val">github.com/shaikh-eamin</div>
+          </div>
+          <span class="clink-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="contact-form rv d2">
+      <div class="form-title">Send a Quick Message</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="John Smith"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@company.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Project Type</label>
+        <select>
+          <option value="" disabled selected>Select a service...</option>
+          <option>IoT System Design &amp; Development</option>
+          <option>Embedded Systems Engineering</option>
+          <option>Python Scripting &amp; MATLAB Analysis</option>
+          <option>Solar &amp; Renewable Energy Engineering</option>
+          <option>PCB Design &amp; Circuit Design</option>
+          <option>Other / General Inquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="5" placeholder="Describe your project briefly — scope, timeline, and key requirements..."></textarea>
+      </div>
+      <button class="form-submit" onclick="handleFormSubmit(this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Message
+      </button>
+      <div class="form-note">// Redirects to Upwork for secure messaging</div>
+    </div>
+  </div>
+</section>
+
 <!-- ── CTA ── -->
 <div class="cta rv">
   <div class="cta-tag">Currently Available — Accepting New Projects</div>
@@ -1450,6 +1655,7 @@ footer{
     <a href="#about">About</a><a href="#experience">Experience</a>
     <a href="#skills">Skills</a><a href="#projects">Projects</a>
     <a href="#services">Services</a><a href="#reviews">Reviews</a>
+    <a href="#contact">Contact</a>
     <a href="https://www.upwork.com/freelancers/~017e14391b541c6446?mp_source=share" target="_blank">Upwork →</a>
   </div>
   <div class="fl-copy">
@@ -1542,7 +1748,162 @@ window.addEventListener("scroll",()=>{
 },{passive:true});
 
 /* ══════════════════════════════════════════
-   TECH BACKGROUND — Circuit Traces + Nodes
+   SCROLL SPY
+══════════════════════════════════════════ */
+const sections = document.querySelectorAll("section[id], div.cta");
+const navAnchors = document.querySelectorAll("#nav-links a[data-sec]");
+const spyObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      navAnchors.forEach(a => a.classList.remove("active"));
+      const id = e.target.id;
+      const match = document.querySelector(`#nav-links a[data-sec="${id}"]`);
+      if(match) match.classList.add("active");
+    }
+  });
+},{rootMargin:"-40% 0px -55% 0px", threshold:0});
+document.querySelectorAll("section[id]").forEach(s => spyObs.observe(s));
+
+/* ══════════════════════════════════════════
+   TYPEWRITER — hero subtitle
+══════════════════════════════════════════ */
+(function(){
+  const el = document.querySelector(".hero-sub");
+  if(!el) return;
+  const lines = [
+    "Electronic Engineer · IoT Specialist",
+    "Embedded Systems · Python & MATLAB",
+    "Solar Energy · Circuit Design",
+    "Smart Monitoring · LoRaWAN"
+  ];
+  let li = 0, ci = 0, deleting = false, paused = false;
+  el.innerHTML = '<span id="tw"></span><span class="tw-cursor">|</span>';
+  // inject cursor blink CSS
+  const s = document.createElement("style");
+  s.textContent = `.tw-cursor{color:var(--aqua);animation:twblink .8s step-end infinite;}
+  @keyframes twblink{0%,100%{opacity:1}50%{opacity:0}}`;
+  document.head.appendChild(s);
+  const tw = document.getElementById("tw");
+  function tick(){
+    const full = lines[li];
+    if(paused){ paused=false; setTimeout(tick, deleting?60:2200); return; }
+    if(!deleting){
+      tw.textContent = full.slice(0, ++ci);
+      if(ci === full.length){ deleting=true; paused=true; setTimeout(tick,80); return; }
+      setTimeout(tick, 55 + Math.random()*30);
+    } else {
+      tw.textContent = full.slice(0, --ci);
+      if(ci === 0){ deleting=false; li=(li+1)%lines.length; paused=true; setTimeout(tick,60); return; }
+      setTimeout(tick, 32);
+    }
+  }
+  setTimeout(tick, 900);
+})();
+
+/* ══════════════════════════════════════════
+   CUSTOM CURSOR
+══════════════════════════════════════════ */
+(function(){
+  if(window.matchMedia("(pointer:coarse)").matches) return; // skip touch devices
+  const cur = document.getElementById("cursor");
+  const ring = document.getElementById("cursor-ring");
+  if(!cur || !ring) return;
+  let mx=0, my=0, rx=0, ry=0;
+  document.addEventListener("mousemove", e => { mx=e.clientX; my=e.clientY; });
+  // cursor snaps instantly, ring follows with lag
+  function animCursor(){
+    cur.style.left = mx+"px";
+    cur.style.top  = my+"px";
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx+"px";
+    ring.style.top  = ry+"px";
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  // hide default cursor on body
+  document.body.style.cursor = "none";
+  document.querySelectorAll("a,button").forEach(el=>{
+    el.style.cursor="none";
+  });
+})();
+
+/* ══════════════════════════════════════════
+   FORM SUBMIT HANDLER
+══════════════════════════════════════════ */
+async function handleFormSubmit(btn){
+  const form = btn.closest(".contact-form");
+  const name    = form.querySelector('input[type="text"]').value.trim();
+  const email   = form.querySelector('input[type="email"]').value.trim();
+  const project = form.querySelector("select").value;
+  const msg     = form.querySelector("textarea").value.trim();
+
+  /* Validate */
+  if(!name || !email || !msg){
+    btn.textContent = "Please fill all fields";
+    btn.style.background = "var(--gold)";
+    btn.style.color = "#000";
+    setTimeout(()=>{
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message`;
+      btn.style.background = "";
+      btn.style.color = "";
+    }, 2200);
+    return;
+  }
+
+  /* Sending state */
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg> Sending…`;
+  btn.disabled = true;
+
+  /* Inject spin keyframe once */
+  if(!document.getElementById("spin-kf")){
+    const s=document.createElement("style");
+    s.id="spin-kf";
+    s.textContent="@keyframes spin{to{transform:rotate(360deg)}}";
+    document.head.appendChild(s);
+  }
+
+  try {
+    const res = await fetch("https://formspree.io/f/mqeyvajq", {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        project: project || "Not specified",
+        message: msg
+      })
+    });
+
+    if(res.ok){
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Message Sent!`;
+      btn.style.background = "var(--sage)";
+      btn.style.color = "#000";
+      /* Clear fields */
+      form.querySelector('input[type="text"]').value = "";
+      form.querySelector('input[type="email"]').value = "";
+      form.querySelector("select").selectedIndex = 0;
+      form.querySelector("textarea").value = "";
+      /* Show success note */
+      const note = form.querySelector(".form-note");
+      if(note){ note.textContent = "✓ Message received — I'll reply within 12 hours."; note.style.color="var(--sage)"; }
+    } else {
+      throw new Error("Server error");
+    }
+  } catch(err) {
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Failed — try again`;
+    btn.style.background = "#c0392b";
+    btn.disabled = false;
+    setTimeout(()=>{
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message`;
+      btn.style.background = "";
+    }, 3000);
+  }
+}
+
+
+/* ══════════════════════════════════════════
+   TECH BACKGROUND CANVAS
 ══════════════════════════════════════════ */
 (function(){
   const canvas = document.getElementById("tech-bg");
@@ -1552,10 +1913,14 @@ window.addEventListener("scroll",()=>{
   const SAGE  = "45,212,160";
   const PLUM  = "155,111,232";
 
-  let W, H, nodes, pulses, sparks;
+  let W, H, nodes, pulses;
   const NODE_COUNT = window.innerWidth < 600 ? 18 : 32;
-  const PULSE_INTERVAL = 900; // ms between new pulses
+  const PULSE_INTERVAL = 900;
   let lastPulse = 0;
+  let mouseX = -9999, mouseY = -9999;
+
+  // Track mouse for node attraction
+  window.addEventListener("mousemove", e => { mouseX=e.clientX; mouseY=e.clientY; },{passive:true});
 
   /* ── Resize ── */
   function resize(){
@@ -1580,12 +1945,24 @@ window.addEventListener("scroll",()=>{
       this.vy = (Math.random() - 0.5) * 0.18;
     }
     update(){
+      // Gentle drift toward mouse when close
+      const dx = mouseX - this.x;
+      const dy = mouseY - this.y;
+      const dist = Math.hypot(dx, dy);
+      if(dist < 160 && dist > 0){
+        const force = (1 - dist/160) * 0.012;
+        this.vx += dx/dist * force;
+        this.vy += dy/dist * force;
+      }
+      // Speed cap
+      const spd = Math.hypot(this.vx, this.vy);
+      if(spd > 0.7){ this.vx = (this.vx/spd)*0.7; this.vy = (this.vy/spd)*0.7; }
       this.x += this.vx;
       this.y += this.vy;
       this.blink += this.blinkSpeed;
-      if(this.x < -20) this.x = W + 20;
+      if(this.x < -20) this.x = W+20;
       if(this.x > W+20) this.x = -20;
-      if(this.y < -20) this.y = H + 20;
+      if(this.y < -20) this.y = H+20;
       if(this.y > H+20) this.y = -20;
     }
     draw(){
